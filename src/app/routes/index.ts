@@ -33,10 +33,7 @@ const moduleRoutes = [
         path: '/payments',
         route: PaymentRoutes
     },
-    {
-        path: '/meta',
-        route: MetaRoutes
-    },
+
 
 ];
 
