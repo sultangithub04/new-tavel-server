@@ -3,7 +3,7 @@ import { userRoute } from '../modules/user/user.route';
 
 
 import { authRoutes } from '../modules/auth/auth.routes';
-import { MetaRoutes } from '../modules/meta/meta.routes';
+
 import { TravelPlanRoutes } from '../modules/plan/travelPlan.route';
 import { ReviewRoutes } from '../modules/review/review.route';
 import { PaymentRoutes } from '../modules/payment/payment.route';
