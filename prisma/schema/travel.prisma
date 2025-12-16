@@ -1,0 +1,122 @@
+// model User {
+//   id                 String     @id @default(uuid())
+//   email              String     @unique
+//   password           String
+//   role               UserRole   @default(TRAVELLER)
+//   needPasswordChange Boolean    @default(true)
+//   status             UserStatus @default(ACTIVE)
+//   createdAt          DateTime   @default(now())
+//   updatedAt          DateTime   @updatedAt
+
+//   admin     Admin?
+//   traveller Traveller?
+
+//   // ALL RELATIONS BELONG HERE  
+//   travelPlans           TravelPlan[]
+//   reviewsGiven          Review[]       @relation("reviewsGiven")
+//   reviewsReceived       Review[]       @relation("reviewsReceived")
+//   payments              Payment[]
+//   matchRequestsSent     MatchRequest[] @relation("matchRequestsSent")
+//   matchRequestsReceived MatchRequest[] @relation("matchRequestsReceived")
+
+//   @@map("users")
+// }
+
+// model Admin {
+//   id            String   @id @default(uuid())
+//   name          String
+//   email         String   @unique
+//   profilePhoto  String?
+//   contactNumber String
+//   isDeleted     Boolean  @default(false)
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+
+//   user User @relation(fields: [email], references: [email])
+
+//   @@map("admins")
+// }
+
+// model Traveller {
+//   id               String   @id @default(uuid())
+//   email            String   @unique
+//   name             String
+//   profilePhoto     String?
+//   address          String?
+//   bio              String?
+//   travelInterests  String?
+//   visitedCountries String?
+//   currentLocation  String?
+//   isDeleted        Boolean  @default(false)
+//   createdAt        DateTime @default(now())
+//   updatedAt        DateTime @updatedAt
+
+//   // Traveller belongs to User
+//   user User @relation(fields: [email], references: [email])
+
+//   @@map("travellers")
+// }
+
+// // TRAVEL PLAN
+// model TravelPlan {
+//   id          Int           @id @default(autoincrement())
+//   user        User          @relation(fields: [userId], references: [id])
+//   userId      String
+//   title       String
+//   destination String
+//   startDate   DateTime
+//   endDate     DateTime
+//   budgetRange String
+//   status      PaymentStatus @default(UNPAID)
+//   travelType  TravelType
+//   description String?
+
+//   reviews       Review[]
+//   matchRequests MatchRequest[]
+// }
+
+// // REVIEW
+// model Review {
+//   id         Int    @id @default(autoincrement())
+//   reviewer   User   @relation("reviewsGiven", fields: [reviewerId], references: [id])
+//   reviewerId String
+
+//   reviewee   User   @relation("reviewsReceived", fields: [revieweeId], references: [id])
+//   revieweeId String
+
+//   travelPlan TravelPlan @relation(fields: [planId], references: [id])
+//   planId     Int
+
+//   rating    Int
+//   comment   String?
+//   status    RevewStatus @default(PENDING)
+//   createdAt DateTime    @default(now())
+// }
+
+// // PAYMENT
+// model Payment {
+//   id     Int    @id @default(autoincrement())
+//   user   User   @relation(fields: [userId], references: [id])
+//   userId String
+
+//   subscriptionType SubscriptionType
+//   amount           Float
+//   status           PaymentStatus    @default(UNPAID)
+//   createdAt        DateTime         @default(now())
+// }
+
+// // MATCH REQUEST
+// model MatchRequest {
+//   id       Int    @id @default(autoincrement())
+//   sender   User   @relation("matchRequestsSent", fields: [senderId], references: [id])
+//   senderId String
+
+//   receiver   User   @relation("matchRequestsReceived", fields: [receiverId], references: [id])
+//   receiverId String
+
+//   travelPlan TravelPlan @relation(fields: [planId], references: [id])
+//   planId     Int
+
+//   status    MatchStatus @default(PENDING)
+//   createdAt DateTime    @default(now())
+// }

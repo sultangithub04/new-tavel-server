@@ -1,0 +1,55 @@
+enum UserRole {
+  TRAVELLER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+enum TravelType {
+  SOLO
+  GROUP
+  FAMILY
+  FRIENDS
+}
+
+enum SubscriptionType {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+}
+
+enum MatchStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+enum RevewStatus {
+  APPROVED
+  PENDING
+}
+
+enum SubscriptionPlan {
+  FREE
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}

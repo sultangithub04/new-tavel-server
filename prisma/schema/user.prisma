@@ -1,0 +1,183 @@
+model User {
+  id                 String     @id @default(uuid())
+  email              String     @unique
+  password           String
+  role               UserRole   @default(TRAVELLER)
+  needPasswordChange Boolean    @default(true)
+  status             UserStatus @default(ACTIVE)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  admin     Admin?
+  traveller Traveller?
+
+  @@map("users")
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  profilePhoto  String?
+  contactNumber String
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [email], references: [email])
+
+  @@map("admins")
+}
+
+model Traveller {
+  id               String   @id @default(uuid())
+  email            String   @unique
+  name             String
+  profilePhoto     String?
+  address          String?
+  bio              String?
+  travelInterests  String?
+  visitedCountries String?
+  currentLocation  String?
+  latitude         Float?
+  longitude        Float?
+  isDeleted        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [email], references: [email])
+
+  travelPlans           TravelPlan[]
+  reviewsGiven          Review[]       @relation("reviewsGiven")
+  reviewsReceived       Review[]       @relation("reviewsReceived")
+  matchRequestsSent     MatchRequest[] @relation("matchRequestsSent")
+  matchRequestsReceived MatchRequest[] @relation("matchRequestsReceived")
+  payments              Payment[]
+  notifications         Notification[]
+  subscriptions         Subscription[]
+
+  matchesA Match[] @relation("MatchesA")
+  matchesB Match[] @relation("MatchesB")
+  joinRequests          JoinRequest[]
+
+  @@map("travellers")
+}
+
+model TravelPlan {
+  id          Int       @id @default(autoincrement())
+  travellerId String
+  traveller   Traveller @relation(fields: [travellerId], references: [id])
+
+  title       String
+  destination String
+  startDate   DateTime
+  endDate     DateTime
+  budgetMin   Int?
+  budgetMax   Int?
+  status      PaymentStatus @default(UNPAID)
+  travelType  TravelType
+  description String?
+
+  reviews       Review[]
+  matchRequests MatchRequest[]
+  joinRequests  JoinRequest[]
+  matches       Match[]
+
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  reviewerId String
+  reviewer   Traveller @relation("reviewsGiven", fields: [reviewerId], references: [id])
+
+  revieweeId String
+  reviewee   Traveller @relation("reviewsReceived", fields: [revieweeId], references: [id])
+
+  planId     Int
+  travelPlan TravelPlan @relation(fields: [planId], references: [id])
+
+  rating    Int
+  comment   String?
+  status    RevewStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+}
+
+model Payment {
+  id          Int @id @default(autoincrement())
+  travellerId String
+  traveller   Traveller @relation(fields: [travellerId], references: [id])
+
+  subscriptionType SubscriptionType
+  amount           Float
+  status           PaymentStatus @default(UNPAID)
+  createdAt        DateTime @default(now())
+}
+
+model MatchRequest {
+  id Int @id @default(autoincrement())
+
+  senderId String
+  sender   Traveller @relation("matchRequestsSent", fields: [senderId], references: [id])
+
+  receiverId String
+  receiver   Traveller @relation("matchRequestsReceived", fields: [receiverId], references: [id])
+
+  planId     Int
+  travelPlan TravelPlan @relation(fields: [planId], references: [id])
+
+  status    MatchStatus @default(PENDING)
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  travellerId String
+  traveller   Traveller @relation(fields: [travellerId], references: [id])
+
+  title     String
+  message   String
+  isRead    Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id          String    @id @default(uuid())
+  travellerId String
+  traveller   Traveller @relation(fields: [travellerId], references: [id])
+
+  plan      SubscriptionPlan
+  status    SubscriptionStatus @default(ACTIVE)
+  startDate DateTime           @default(now())
+  endDate   DateTime?
+  createdAt DateTime           @default(now())
+}
+
+model JoinRequest {
+  id          String     @id @default(uuid())
+  planId      Int
+  plan        TravelPlan @relation(fields: [planId], references: [id])
+
+  requesterId String
+  requester   Traveller @relation(fields: [requesterId], references: [id])
+
+  status    RequestStatus @default(PENDING)
+  message   String?
+  createdAt DateTime      @default(now())
+}
+
+model Match {
+  id String @id @default(uuid())
+
+  travellerAId String
+  travellerA   Traveller @relation("MatchesA", fields: [travellerAId], references: [id])
+
+  travellerBId String
+  travellerB   Traveller @relation("MatchesB", fields: [travellerBId], references: [id])
+
+  planId Int?
+  plan   TravelPlan? @relation(fields: [planId], references: [id])
+
+  compatibilityScore Int
+  createdAt          DateTime @default(now())
+}
