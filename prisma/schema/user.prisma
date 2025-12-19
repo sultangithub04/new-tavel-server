@@ -56,9 +56,9 @@ model Traveller {
   notifications         Notification[]
   subscriptions         Subscription[]
 
-  matchesA Match[] @relation("MatchesA")
-  matchesB Match[] @relation("MatchesB")
-  joinRequests          JoinRequest[]
+  matchesA     Match[]       @relation("MatchesA")
+  matchesB     Match[]       @relation("MatchesB")
+  joinRequests JoinRequest[]
 
   @@map("travellers")
 }
@@ -83,6 +83,7 @@ model TravelPlan {
   joinRequests  JoinRequest[]
   matches       Match[]
 
+  payments Payment[] @relation("TravelPlanPayments")
 }
 
 model Review {
@@ -104,14 +105,17 @@ model Review {
 }
 
 model Payment {
-  id          Int @id @default(autoincrement())
-  travellerId String
-  traveller   Traveller @relation(fields: [travellerId], references: [id])
+  id           Int        @id @default(autoincrement())
+  travelPlanId Int
+  travelPlan   TravelPlan @relation("TravelPlanPayments", fields: [travelPlanId], references: [id])
 
   subscriptionType SubscriptionType
   amount           Float
-  status           PaymentStatus @default(UNPAID)
-  createdAt        DateTime @default(now())
+  status           PaymentStatus    @default(UNPAID)
+  createdAt        DateTime         @default(now())
+
+  travellerId String?
+  traveller   Traveller? @relation(fields: [travellerId], references: [id])
 }
 
 model MatchRequest {
@@ -127,7 +131,7 @@ model MatchRequest {
   travelPlan TravelPlan @relation(fields: [planId], references: [id])
 
   status    MatchStatus @default(PENDING)
-  createdAt DateTime @default(now())
+  createdAt DateTime    @default(now())
 }
 
 model Notification {
@@ -137,7 +141,7 @@ model Notification {
 
   title     String
   message   String
-  isRead    Boolean @default(false)
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
@@ -154,9 +158,9 @@ model Subscription {
 }
 
 model JoinRequest {
-  id          String     @id @default(uuid())
-  planId      Int
-  plan        TravelPlan @relation(fields: [planId], references: [id])
+  id     String     @id @default(uuid())
+  planId Int
+  plan   TravelPlan @relation(fields: [planId], references: [id])
 
   requesterId String
   requester   Traveller @relation(fields: [requesterId], references: [id])

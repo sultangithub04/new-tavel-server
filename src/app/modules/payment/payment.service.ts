@@ -32,9 +32,10 @@ export const createPayment = async (payload: any) => {
     ],
     metadata: {
       paymentId: payment.id, // link to DB payment
-      userId: payload.travellerId
+      userId: payload.travelPlanId,
+  
     },
-    success_url: `https://fontnew.vercel.app/success`,
+    success_url: `http://localhost:3000/success`,
     cancel_url: `https://fontnew.vercel.app/cancel`,
   });
   console.log(session);
@@ -78,7 +79,7 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
 
       await prisma.travelPlan.update({
         where: {
-          id: subscriberId
+          id: Number(subscriberId)
         },
         data: {
           status: session.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.UNPAID
