@@ -35,7 +35,7 @@ export const createPayment = async (payload: any) => {
       userId: payload.travelPlanId,
   
     },
-    success_url: `http://localhost:3000/success`,
+    success_url: `https://fontnew.vercel.app/success`,
     cancel_url: `https://fontnew.vercel.app/cancel`,
   });
   console.log(session);
