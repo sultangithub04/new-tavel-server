@@ -33,7 +33,7 @@ export const createPayment = async (payload: any) => {
     metadata: {
       paymentId: payment.id, // link to DB payment
       userId: payload.travelPlanId,
-  
+
     },
     success_url: `https://fontnew.vercel.app/success`,
     cancel_url: `https://fontnew.vercel.app/cancel`,
@@ -70,6 +70,8 @@ const deletePayment = async (id: string) => {
 };
 // pament
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {
+  console.log("🔥 Webhook Event Type:", event.type);
+  console.log("📦 Metadata:", event.data.object);
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as any;
