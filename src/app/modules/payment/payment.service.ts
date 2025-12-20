@@ -146,27 +146,35 @@ const deletePayment = async (id: string) => {
 //   }
 // };
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {
-
   console.log("🔥 Webhook Event Type:", event.type);
-  console.log("📦 Metadata:", event.data.object);
-  // if (event.type !== "checkout.session.completed") return;
 
-  const session = event.data.object as any;
+  if (event.type !== "checkout.session.completed") {
+    console.log(`ℹ️ Unhandled event type: ${event.type}`);
+    return;
+  }
 
-  // ✅ Correct PaymentIntent retrieval
+  const session = event.data.object as Stripe.Checkout.Session;
+
+  // ✅ payment_intent ID MUST be string
+  if (!session.payment_intent || typeof session.payment_intent !== "string") {
+    console.error("❌ Missing payment_intent on session");
+    return;
+  }
+
+  // ✅ Retrieve PaymentIntent correctly
   const paymentIntent = await stripe.paymentIntents.retrieve(
-    session
+    session.payment_intent
   );
 
   const paymentId = paymentIntent.metadata?.paymentId;
   const travelPlanId = paymentIntent.metadata?.travelPlanId;
 
   if (!paymentId || !travelPlanId) {
-    console.error("❌ Missing metadata", paymentIntent.metadata);
+    console.error("❌ Missing metadata:", paymentIntent.metadata);
     return;
   }
 
-  // ✅ Idempotency protection
+  // ✅ Idempotency check
   const existingPayment = await prisma.payment.findUnique({
     where: { id: Number(paymentId) },
   });
@@ -181,23 +189,21 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
     return;
   }
 
+  // ✅ Atomic update
   await prisma.$transaction([
     prisma.payment.update({
       where: { id: Number(paymentId) },
-      data: {
-        status: PaymentStatus.PAID,
-      },
+      data: { status: PaymentStatus.PAID },
     }),
     prisma.travelPlan.update({
       where: { id: Number(travelPlanId) },
-      data: {
-        status: PaymentStatus.PAID,
-      },
+      data: { status: PaymentStatus.PAID },
     }),
   ]);
 
   console.log("✅ Payment & TravelPlan updated successfully");
 };
+
 
 
 export const PaymentService = {
