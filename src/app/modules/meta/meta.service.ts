@@ -3,7 +3,7 @@ import { prisma } from "../../shared/prisma";
 
 
 const getAdminMetaData = async () => {
-    const appointmentCount = await prisma.admin.count();
+    const adminCount = await prisma.admin.count();
     const travellerCount = await prisma.traveller.count();
     const travelPlanCount = await prisma.travelPlan.count();
     const paymentCount = await prisma.payment.count();
@@ -20,7 +20,7 @@ const getAdminMetaData = async () => {
     // const barChartData = await getBarChartData();
     // const pieCharData = await getPieChartData();
 
-    return { appointmentCount, travellerCount, travelPlanCount, paymentCount, totalRevenue}
+    return { adminCount, travellerCount, travelPlanCount, paymentCount, totalRevenue}
 }
 
 // const getDoctorMetaData = async (user: IAuthUser) => {
