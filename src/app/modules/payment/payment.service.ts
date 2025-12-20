@@ -30,7 +30,7 @@ export const createPayment = async (payload: any) => {
         quantity: 1,
       },
     ],
-      payment_intent_data: {
+    payment_intent_data: {
       metadata: {
         paymentId: payment.id,
         userId: payload.travelPlanId,
@@ -77,14 +77,14 @@ const deletePayment = async (id: string) => {
 };
 // pament
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {
-  console.log("🔥 Webhook Event Type:", event.type);
-  console.log("📦 Metadata:", event.data.object);
+
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as any;
 
-      const subscriberId = session.metadata?.userId;
-      const paymentId = session.metadata?.paymentId;
+      const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
+      const subscriberId = paymentIntent.metadata?.userId;
+      const paymentId = paymentIntent.metadata?.paymentId;
 
       await prisma.travelPlan.update({
         where: {
