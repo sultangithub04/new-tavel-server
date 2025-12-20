@@ -83,7 +83,7 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
     case "checkout.session.completed": {
       const session = event.data.object as any;
 
-      const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
+      const paymentIntent = await stripe.paymentIntents.retrieve(session.metadata);
       const subscriberId = paymentIntent.metadata?.userId;
       const paymentId = paymentIntent.metadata?.paymentId;
 
