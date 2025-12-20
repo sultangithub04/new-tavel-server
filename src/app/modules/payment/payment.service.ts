@@ -155,7 +155,7 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
 
   // ✅ Correct PaymentIntent retrieval
   const paymentIntent = await stripe.paymentIntents.retrieve(
-    session.payment_intent
+    session
   );
 
   const paymentId = paymentIntent.metadata?.paymentId;
