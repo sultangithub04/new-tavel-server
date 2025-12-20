@@ -30,11 +30,18 @@ export const createPayment = async (payload: any) => {
         quantity: 1,
       },
     ],
-    metadata: {
-      paymentId: payment.id, // link to DB payment
-      userId: payload.travelPlanId,
+      payment_intent_data: {
+      metadata: {
+        paymentId: payment.id,
+        userId: payload.travelPlanId,
 
+      },
     },
+    // metadata: {
+    //   paymentId: payment.id, // link to DB payment
+    //   userId: payload.travelPlanId,
+
+    // },
     success_url: `https://fontnew.vercel.app/success`,
     cancel_url: `https://fontnew.vercel.app/cancel`,
   });
