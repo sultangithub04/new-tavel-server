@@ -8,10 +8,10 @@ import sendResponse from "../../shared/sendResponse";
 import catchAsync from "../../shared/catchAsync";
 import { IAuthUser } from "../../interface/common";
 
-const fetchDashboardMetaData = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
+const fetchDashboardMetaData = catchAsync(async (req: Request, res: Response) => {
 
-    const user = req.user;
-    const result = await MetaService.getAdminMetaData(user as IAuthUser);
+
+    const result = await MetaService.getAdminMetaData();
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

@@ -1,12 +1,8 @@
 import { PaymentStatus, UserRole } from "@prisma/client";
-
-
-
-import { IAuthUser } from "../../interface/common";
 import { prisma } from "../../shared/prisma";
 
 
-const getAdminMetaData = async (user: IAuthUser) => {
+const getAdminMetaData = async () => {
     const appointmentCount = await prisma.admin.count();
     const travellerCount = await prisma.traveller.count();
     const travelPlanCount = await prisma.travelPlan.count();
