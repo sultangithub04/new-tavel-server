@@ -77,7 +77,8 @@ const deletePayment = async (id: string) => {
 };
 // pament
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {
-
+  console.log("🔥 Webhook Event Type:", event.type);
+  console.log("📦 Metadata:", event.data.object);
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as any;
