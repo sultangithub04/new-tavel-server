@@ -146,7 +146,10 @@ const deletePayment = async (id: string) => {
 //   }
 // };
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {
-  if (event.type !== "checkout.session.completed") return;
+
+  console.log("🔥 Webhook Event Type:", event.type);
+  console.log("📦 Metadata:", event.data.object);
+  // if (event.type !== "checkout.session.completed") return;
 
   const session = event.data.object as any;
 
